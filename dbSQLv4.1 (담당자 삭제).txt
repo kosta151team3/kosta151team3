@@ -1,0 +1,605 @@
+/* CategoryBoard */
+CREATE TABLE CategoryBoard (
+	CategoryCode VARCHAR2(10) NOT NULL, /* 카테고리코드 */
+	CategoryTitle VARCHAR2(100) NOT NULL /* 카테고리이름 */
+);
+
+CREATE UNIQUE INDEX PK_CategoryBoard
+	ON CategoryBoard (
+		CategoryCode ASC
+	);
+
+ALTER TABLE CategoryBoard
+	ADD
+		CONSTRAINT PK_CategoryBoard
+		PRIMARY KEY (
+			CategoryCode
+		);
+
+/* CategoryList */
+CREATE TABLE AdminCategoryList (
+	BoardID NUMBER NOT NULL, /* 게시글?ID */
+	CategoryCode VARCHAR2(10) NOT NULL, /* 카테고리코드 */
+	Flag NUMBER NOT NULL /* 게시여부 */
+);
+
+CREATE UNIQUE INDEX PK_AdminCategoryList
+	ON AdminCategoryList (
+		BoardID ASC
+	);
+
+ALTER TABLE AdminCategoryList
+	ADD
+		CONSTRAINT PK_AdminCategoryList
+		PRIMARY KEY (
+			BoardID
+		);
+
+/* Field */
+CREATE TABLE Field (
+	FieldCode VARCHAR2(10) NOT NULL, /* 분야코드 */
+	FieldTitle VARCHAR2(20) NOT NULL /* 분야이름 */
+);
+
+CREATE UNIQUE INDEX PK_Field
+	ON Field (
+		FieldCode ASC
+	);
+
+ALTER TABLE Field
+	ADD
+		CONSTRAINT PK_Field
+		PRIMARY KEY (
+			FieldCode
+		);
+
+/* MemberInfo */
+CREATE TABLE MemberInfo (
+	MemCode NUMBER NOT NULL, /* 회원코드 */
+	NickName VARCHAR2(20) NOT NULL, /* 닉네임 */
+	pwd VARCHAR2(20) NOT NULL, /* 비밀번호 */
+	Name VARCHAR2(20) NOT NULL, /* 이름 */
+	Email VARCHAR2(40) NOT NULL, /* 이메일 */
+	University VARCHAR2(20) NOT NULL /* 학교 */
+);
+
+CREATE UNIQUE INDEX PK_MemberInfo
+	ON MemberInfo (
+		MemCode ASC
+	);
+
+ALTER TABLE MemberInfo
+	ADD
+		CONSTRAINT PK_MemberInfo
+		PRIMARY KEY (
+			MemCode
+		);
+
+/* GroupComent */
+CREATE TABLE GroupComment (
+	GroupCN NUMBER NOT NULL, /* 코멘트번호 */
+	BoardID NUMBER NOT NULL, /* 게시글ID */
+	MemCode NUMBER NOT NULL, /* 회원코드 */
+	EnrollDate VARCHAR2(20) NOT NULL, /* 등록날짜 */
+	Contents VARCHAR2(255) NOT NULL /* 내용 */
+);
+
+CREATE UNIQUE INDEX PK_GroupComment
+	ON GroupComment (
+		GroupCN ASC
+	);
+
+ALTER TABLE GroupComment
+	ADD
+		CONSTRAINT PK_GroupComment
+		PRIMARY KEY (
+			GroupCN
+		);
+
+/* CommunityList */
+CREATE TABLE CommunityList (
+	ComBoardID NUMBER NOT NULL, /* 커뮤니티게시글번호 */
+	ComCode NUMBER NOT NULL, /* 커뮤니티게시판코드 */
+	MemCode NUMBER NOT NULL, /* 회원코드 */
+	Title VARCHAR2(100) NOT NULL, /* 제목 */
+	Contents VARCHAR2(999) NOT NULL, /* 내용 */
+	EnrollDate VARCHAR2(20) NOT NULL, /* 작성일 */
+	Hit NUMBER, /* 조회수 */
+	LikeCount NUMBER /* 공감수 */
+);
+
+CREATE UNIQUE INDEX PK_CommunityList
+	ON CommunityList (
+		ComBoardID ASC
+	);
+
+ALTER TABLE CommunityList
+	ADD
+		CONSTRAINT PK_CommunityList
+		PRIMARY KEY (
+			ComBoardID
+		);
+
+/* CommunityBoard */
+CREATE TABLE CommunityBoard (
+	ComCode NUMBER NOT NULL, /* 커뮤니티게시판코드 */
+	ComTitle VARCHAR2(100) NOT NULL, /* 커뮤니티게시판제목 */
+	ComContents VARCHAR2(100) NOT NULL, /*커뮤니티 내용*/
+	ComImage VARCHAR2(100) NOT NULL /*커뮤니티 이미지*/
+);
+
+CREATE UNIQUE INDEX PK_CommunityBoard
+	ON CommunityBoard (
+		ComCode ASC
+	);
+
+ALTER TABLE CommunityBoard
+	ADD
+		CONSTRAINT PK_CommunityBoard
+		PRIMARY KEY (
+			ComCode
+		);
+
+/* GroupList */
+CREATE TABLE GroupList (
+	BoardID NUMBER NOT NULL, /* 게시글ID */
+	CategoryCode VARCHAR2(10) NOT NULL, /* 카테고리코드 */
+	FieldCode VARCHAR2(10) NOT NULL, /* 분야코드 */
+	Title VARCHAR2(100) NOT NULL, /* 제목 */
+	Contents VARCHAR2(999) NOT NULL, /* 내용 */
+	EnrollDate VARCHAR2(20) NOT NULL, /* 작성일 */
+	StartDate VARCHAR2(20) NOT NULL, /* 시작일 */
+	EndDate VARCHAR2(20) NOT NULL, /* 종료일 */
+	Website VARCHAR2(45), /* 웹사이트 */
+	Image VARCHAR2(100) NOT NULL, /* 이미지 */
+	PrizeMoney VARCHAR2(100), /* 시상금액 */
+	LikeCount NUMBER, /* 공감수 */
+	Hit NUMBER, /* 조회수 */
+	Flag NUMBER NOT NULL, /* 게시여부 */
+	Place VARCHAR2(50),  /* 장소 */
+	AppName VARCHAR2(20) NOT NULL, /* 담당자 이름*/
+	AppPhone VARCHAR2(20) NOT NULL/* 담당자 전화*/
+);
+
+CREATE UNIQUE INDEX PK_GroupList
+	ON GroupList (
+		BoardID ASC
+	);
+
+ALTER TABLE GroupList
+	ADD
+		CONSTRAINT PK_GroupList
+		PRIMARY KEY (
+			BoardID
+		);
+
+/* ActivityList */
+CREATE TABLE ActivityList (
+	BoardID NUMBER NOT NULL, /* 게시글ID */
+	FieldCode VARCHAR2(10) NOT NULL, /* 분야코드 */
+	CategoryCode VARCHAR2(10) NOT NULL, /* 카테고리코드 */
+	Title VARCHAR2(100) NOT NULL, /* 제목 */
+	Contents VARCHAR2(999) NOT NULL, /* 내용 */
+	EnrollDate VARCHAR2(20) NOT NULL, /* 작성일 */
+	StartDate VARCHAR2(20) NOT NULL, /* 시작일 */
+	EndDate VARCHAR2(20) NOT NULL, /* 종료일 */
+	Website VARCHAR2(45), /* 웹사이트 */
+	Image VARCHAR2(100) NOT NULL, /* 이미지 */
+	PrizeMoney VARCHAR2(100) NOT NULL, /* 시상금액 */
+	Hit NUMBER, /* 조회수 */
+	Flag NUMBER NOT NULL, /* 게시여부 */
+	Place VARCHAR2(50),  /* 장소 */
+	AppName VARCHAR2(20) NOT NULL, /* 담당자 이름*/
+	AppPhone VARCHAR2(20) NOT NULL/* 담당자 전화*/
+);
+
+CREATE UNIQUE INDEX PK_ActivityList
+	ON ActivityList (
+		BoardID ASC
+	);
+
+ALTER TABLE ActivityList
+	ADD
+		CONSTRAINT PK_ActivityList
+		PRIMARY KEY (
+			BoardID
+		);
+
+/* ActivityComent */
+CREATE TABLE ActivityComment (
+	ActivityCN NUMBER NOT NULL, /* 코멘트번호 */
+	BoardID NUMBER NOT NULL, /* 게시글ID */
+	MemCode NUMBER NOT NULL, /* 회원코드 */
+	EnrollDate VARCHAR2(20) NOT NULL, /* 등록날짜 */
+	Contents VARCHAR2(255) NOT NULL /* 내용 */
+	
+);
+
+CREATE UNIQUE INDEX PK_ActivityComment
+	ON ActivityComment (
+		ActivityCN ASC
+	);
+
+ALTER TABLE ActivityComment
+	ADD
+		CONSTRAINT PK_ActivityComment
+		PRIMARY KEY (
+			ActivityCN
+		);
+
+
+/* ContestList */
+CREATE TABLE ContestList (
+	BoardID NUMBER NOT NULL, /* 게시글ID */
+	FieldCode VARCHAR2(10) NOT NULL, /* 분야코드 */
+	CategoryCode VARCHAR2(10) NOT NULL, /* 카테고리코드 */
+	Title VARCHAR2(100) NOT NULL, /* 제목 */
+	Contents VARCHAR2(999) NOT NULL, /* 내용 */
+	EnrollDate VARCHAR2(20) NOT NULL, /* 작성일 */
+	StartDate VARCHAR2(20) NOT NULL, /* 시작날짜 */
+	EndDate VARCHAR2(20) NOT NULL, /* 종료날짜 */
+	Website VARCHAR2(45), /* 웹사이트 주소 */
+	Image VARCHAR2(100) NOT NULL, /* 이미지 */
+	PrizeMoney VARCHAR2(100) NOT NULL, /* 시상금액 */
+	Hit NUMBER, /* 조회수 */
+	Flag NUMBER NOT NULL, /* 게시여부 */
+	Place VARCHAR2(50),  /* 장소 */
+	AppName VARCHAR2(20) NOT NULL, /* 담당자 이름*/
+	AppPhone VARCHAR2(20) NOT NULL/* 담당자 전화*/
+);
+
+CREATE UNIQUE INDEX PK_ContestList
+	ON ContestList (
+		BoardID ASC
+	);
+
+ALTER TABLE ContestList
+	ADD
+		CONSTRAINT PK_ContestList
+		PRIMARY KEY (
+			BoardID
+		);
+
+/* ContestComent */
+CREATE TABLE ContestComment (
+	ContestCN NUMBER NOT NULL, /* 코멘트번호 */
+	BoardID NUMBER NOT NULL, /* 게시글ID */
+	MemCode NUMBER NOT NULL, /* 회원코드 */
+	EnrollDate VARCHAR2(20) NOT NULL, /* 등록날짜 */
+	Contents VARCHAR2(255) NOT NULL /* 내용 */
+);
+
+CREATE UNIQUE INDEX PK_ContestComment
+	ON ContestComment (
+		ContestCN ASC
+	);
+
+ALTER TABLE ContestComment
+	ADD
+		CONSTRAINT PK_ContestComment
+		PRIMARY KEY (
+			ContestCN
+		);
+
+/* CultureList */
+CREATE TABLE CultureList (
+	BoardID NUMBER NOT NULL, /* 게시글ID */
+	FieldCode VARCHAR2(10) NOT NULL, /* 분야코드 */
+	CategoryCode VARCHAR2(10) NOT NULL, /* 카테고리코드 */
+	Title VARCHAR2(100) NOT NULL, /* 제목 */
+	Contents VARCHAR2(999) NOT NULL, /* 내용 */
+	EnrollDate VARCHAR2(20) NOT NULL, /* 작성일 */
+	StartDate VARCHAR2(20) NOT NULL, /* 시작날짜 */
+	EndDate VARCHAR2(20) NOT NULL, /* 종료날짜 */
+	Website VARCHAR2(45), /* 웹사이트 주소 */
+	Image VARCHAR2(100) NOT NULL, /* 이미지 */
+	Event VARCHAR2(100), /* 혜택 */
+	Hit NUMBER, /* 조회수 */
+	Flag NUMBER NOT NULL, /* 게시여부 */
+	Place VARCHAR2(50),  /* 장소 */
+	AppName VARCHAR2(20) NOT NULL, /* 담당자 이름*/
+	AppPhone VARCHAR2(20) NOT NULL /* 담당자 전화*/
+);
+
+CREATE UNIQUE INDEX PK_CultureList
+	ON CultureList (
+		BoardID ASC
+	);
+
+ALTER TABLE CultureList
+	ADD
+		CONSTRAINT PK_CultureList
+		PRIMARY KEY (
+			BoardID
+		);
+
+/* CultureComent */
+CREATE TABLE CultureComment (
+	CultureCN NUMBER NOT NULL, /* 코멘트번호 */
+	BoardID NUMBER NOT NULL, /* 게시글ID */
+	MemCode NUMBER NOT NULL, /* 회원코드 */
+	EnrollDate VARCHAR2(20) NOT NULL, /* 등록날짜 */
+	Contents VARCHAR2(255) NOT NULL /* 내용 */
+);
+
+CREATE UNIQUE INDEX PK_CultureComment
+	ON CultureComment (
+		CultureCN ASC
+	);
+
+ALTER TABLE CultureComment
+	ADD
+		CONSTRAINT PK_CultureComment
+		PRIMARY KEY (
+			CultureCN
+		);
+
+/* CultureComent2 */
+CREATE TABLE CommunityComment (
+	CultureCN NUMBER NOT NULL, /* 코멘트번호 */
+	ComBoardID NUMBER NOT NULL, /* 커뮤니티게시글번호 */
+	MemCode VARCHAR2(255) NOT NULL, /* 회원코드 */
+	EnrollDate VARCHAR2(20) NOT NULL, /* 등록날짜 */
+	Contents VARCHAR2(255) /* 내용 */
+);
+
+CREATE UNIQUE INDEX PK_CommunityComment
+	ON CommunityComment (
+		CultureCN ASC
+	);
+
+ALTER TABLE CommunityComment
+	ADD
+		CONSTRAINT PK_CommunityComment
+		PRIMARY KEY (
+			CultureCN
+		);
+
+ALTER TABLE AdminCategoryList
+	ADD
+		CONSTRAINT FK_CateBoard_TO_AdCateList
+		FOREIGN KEY (
+			CategoryCode
+		)
+		REFERENCES CategoryBoard (
+			CategoryCode
+		);
+
+
+ALTER TABLE GroupComment
+	ADD
+		CONSTRAINT FK_MemInfo_TO_GComent
+		FOREIGN KEY (
+			MemCode
+		)
+		REFERENCES MemberInfo (
+			MemCode
+		);
+
+ALTER TABLE GroupComment
+	ADD
+		CONSTRAINT FK_GList_TO_GComent
+		FOREIGN KEY (
+			BoardID
+		)
+		REFERENCES GroupList (
+			BoardID
+		);
+
+ALTER TABLE CommunityList
+	ADD
+		CONSTRAINT FK_ComBoard_TO_ComList
+		FOREIGN KEY (
+			ComCode
+		)
+		REFERENCES CommunityBoard (
+			ComCode
+		);
+
+ALTER TABLE CommunityList
+	ADD
+		CONSTRAINT FK_MemInfo_TO_ComList
+		FOREIGN KEY (
+			MemCode
+		)
+		REFERENCES MemberInfo (
+			MemCode
+		);
+
+ALTER TABLE GroupList
+	ADD
+		CONSTRAINT FK_Field_TO_GList
+		FOREIGN KEY (
+			FieldCode
+		)
+		REFERENCES Field (
+			FieldCode
+		);
+
+ALTER TABLE GroupList
+	ADD
+		CONSTRAINT FK_CateBoard_TO_GList
+		FOREIGN KEY (
+			CategoryCode
+		)
+		REFERENCES CategoryBoard (
+			CategoryCode
+		);
+
+ALTER TABLE ActivityList
+	ADD
+		CONSTRAINT FK_CateBoard_TO_ActiList
+		FOREIGN KEY (
+			CategoryCode
+		)
+		REFERENCES CategoryBoard (
+			CategoryCode
+		);
+
+ALTER TABLE ActivityList
+	ADD
+		CONSTRAINT FK_Field_TO_ActiList
+		FOREIGN KEY (
+			FieldCode
+		)
+		REFERENCES Field (
+			FieldCode
+		);
+
+ALTER TABLE ActivityComment
+	ADD
+		CONSTRAINT FK_ActiList_TO_ActiComment
+		FOREIGN KEY (
+			BoardID
+		)
+		REFERENCES ActivityList (
+			BoardID
+		);
+
+ALTER TABLE ActivityComment
+	ADD
+		CONSTRAINT FK_MemInfo_TO_ActiComent
+		FOREIGN KEY (
+			MemCode
+		)
+		REFERENCES MemberInfo (
+			MemCode
+		);
+
+
+ALTER TABLE ContestList
+	ADD
+		CONSTRAINT FK_CateBoard_TO_ConList
+		FOREIGN KEY (
+			CategoryCode
+		)
+		REFERENCES CategoryBoard (
+			CategoryCode
+		);
+
+ALTER TABLE ContestList
+	ADD
+		CONSTRAINT FK_Field_TO_ContestList
+		FOREIGN KEY (
+			FieldCode
+		)
+		REFERENCES Field (
+			FieldCode
+		);
+
+ALTER TABLE ContestComment
+	ADD
+		CONSTRAINT FK_ConList_TO_ConComment
+		FOREIGN KEY (
+			BoardID
+		)
+		REFERENCES ContestList (
+			BoardID
+		);
+
+ALTER TABLE ContestComment
+	ADD
+		CONSTRAINT FK_MemInfo_TO_ConComment
+		FOREIGN KEY (
+			MemCode
+		)
+		REFERENCES MemberInfo (
+			MemCode
+		);
+
+ALTER TABLE CultureList
+	ADD
+		CONSTRAINT FK_Field_TO_CulList
+		FOREIGN KEY (
+			FieldCode
+		)
+		REFERENCES Field (
+			FieldCode
+		);
+
+ALTER TABLE CultureList
+	ADD
+		CONSTRAINT FK_CateBoard_TO_CulList
+		FOREIGN KEY (
+			CategoryCode
+		)
+		REFERENCES CategoryBoard (
+			CategoryCode
+		);
+
+ALTER TABLE CultureComment
+	ADD
+		CONSTRAINT FK_CulList_TO_CulComment
+		FOREIGN KEY (
+			BoardID
+		)
+		REFERENCES CultureList (
+			BoardID
+		);
+
+ALTER TABLE CultureComment
+	ADD
+		CONSTRAINT FK_MemInfo_TO_CulComment
+		FOREIGN KEY (
+			MemCode
+		)
+		REFERENCES MemberInfo (
+			MemCode
+		);
+
+ALTER TABLE CommunityComment
+	ADD
+		CONSTRAINT FK_ComList_TO_ComComment
+		FOREIGN KEY (
+			ComBoardID
+		)
+		REFERENCES CommunityList (
+			ComBoardID
+		);
+
+
+
+
+create sequence membercode
+ increment by 1
+ start with 1
+ nomaxvalue;
+
+create sequence boardid
+ increment by 1
+ start with 1
+ nomaxvalue;
+
+create sequence comboardid
+ increment by 1
+ start with 1
+ nomaxvalue;
+
+
+
+
+
+
+insert into field values('F01','국내봉사');
+insert into field values('F02','해외봉사/탐방');
+insert into field values('F03','서포터즈');
+insert into field values('F04','기자단');
+insert into field values('F05','마케터');
+insert into field values('F06','기획/아이디어');
+insert into field values('F07','브랜드/네이밍');
+insert into field values('F08','광고/마케팅');
+insert into field values('F09','사진/영상/UCC');
+insert into field values('F10','디자인');
+insert into field values('F11','예체능');
+insert into field values('F12','문학/수기');
+insert into field values('F13','IT/게임');
+insert into field values('F14','영화');
+insert into field values('F15','공연');
+insert into field values('F16','전시');
+insert into field values('F17','기타');
+
+--카테고리
+insert into CategoryBoard values('C01','동아리');
+insert into CategoryBoard values('C02','대외활동');
+insert into CategoryBoard values('C03','공모전');
+insert into CategoryBoard values('C04','문화정보');
