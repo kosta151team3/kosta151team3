@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="SpringMVC_Basic_02">
+        <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <property name="java-output-path" value="/SpringMVC_Basic_02/build/classes"/>
+        <property name="context-root" value="SpringMVC_Basic04_WebSite_Annotation"/>
+    </wb-module>
+</project-modules>
