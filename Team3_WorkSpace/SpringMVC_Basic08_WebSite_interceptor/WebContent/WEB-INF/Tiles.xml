@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+   <!-- 1단계 
+        요청하는 jsp 개수 만큼 definition 생성하는 방식
+        단점 : 요청 개수 만큼 definition 정의
+        
+        역활 : view 구성 > Tiles
+        ex) customer.notice Tiles 요청 > content > notice.jsp
+            customer.noticeReg Tiles 요청 > content > noticeReg.jsp
+            
+                 >return "notice.jsp" 
+            Tiles>return "customer.notice"
+   -->
+<!--
+    1단계 (요청마다 정의 파일 생성)
+    return customer.notice > content > notice.jsp 
+    return customer.noticeReg > content > noticeReg.jsp   
+   <definition name="customer.notice" template="/WEB-INF/views/customer/inc/layout.jsp"> 
+         	<put-attribute name="title"   value="kosta notice list" />
+         	<put-attribute name="header"  value="/WEB-INF/views/inc/header.jsp" /> 
+         	<put-attribute name="footer"  value="/WEB-INF/views/inc/footer.jsp" /> 
+         	<put-attribute name="aside"   value="/WEB-INF/views/customer/inc/aside.jsp" /> 
+         	<put-attribute name="visual"  value="/WEB-INF/views/customer/inc/visual.jsp" /> 
+         	<put-attribute name="content" value="/WEB-INF/views/customer/notice.jsp" /> 
+    </definition> 
+    <definition name="customer.noticeReg" template="/WEB-INF/views/customer/inc/layout.jsp"> 
+         	<put-attribute name="title"   value="kosta notice list" />
+         	<put-attribute name="header"  value="/WEB-INF/views/inc/header.jsp" /> 
+         	<put-attribute name="footer"  value="/WEB-INF/views/inc/footer.jsp" /> 
+         	<put-attribute name="aside"   value="/WEB-INF/views/customer/inc/aside.jsp" /> 
+         	<put-attribute name="visual"  value="/WEB-INF/views/customer/inc/visual.jsp" /> 
+         	<put-attribute name="content" value="/WEB-INF/views/customer/noticeReg.jsp" /> 
+    </definition>  -->
+    <!--  
+    2단계 구성
+    1단계 단점 : 중복된 자원을 재활용
+                 상속을 개념
+    
+      <definition name="customer.notice" template="/WEB-INF/views/customer/inc/layout.jsp"> 
+         	<put-attribute name="title"   value="kosta notice list" />
+         	<put-attribute name="header"  value="/WEB-INF/views/inc/header.jsp" /> 
+         	<put-attribute name="footer"  value="/WEB-INF/views/inc/footer.jsp" /> 
+         	<put-attribute name="aside"   value="/WEB-INF/views/customer/inc/aside.jsp" /> 
+         	<put-attribute name="visual"  value="/WEB-INF/views/customer/inc/visual.jsp" /> 
+         	<put-attribute name="content" value="/WEB-INF/views/customer/notice.jsp" /> 
+    </definition> 
+    <definition name="customer.noticeReg" extends="customer.notice"> 
+         	<put-attribute name="title"   value="kosta notice Write" />
+         	<put-attribute name="content" value="/WEB-INF/views/customer/noticeReg.jsp" /> 
+    </definition> 
+ -->   
+ <!--  
+ 3단계 
+ 1,2단계의 단점을 극복
+ 
+ 패턴을 활용하자
+ 주의사항 : 폴더 구조가 명확해야 한다
+           (폴더 구조가 규칙적이지 않다 (1단계 , 2단계)
+           
+ 적용 
+ (customer.*) > *자리에 notice  {1}
+ (customer.*) > *자리에 noticeReg {1}
+ (customer.*) > *자리에 noticeDetail {1}
+ 
+  customer.*.*,* < return customer.a.b.c
+  {1} => a
+  {2} => b
+  {3} => c
+  
+  하나의 정의 파일로 여러개의 요청을 처리 할 수 있다
+ -->
+   <!-- 게시판  -->
+   <!-- 
+   <definition name="customer.*" template="/WEB-INF/views/customer/inc/layout.jsp"> 
+         	<put-attribute name="title"   value="kosta notice list" />
+         	<put-attribute name="header"  value="/WEB-INF/views/inc/header.jsp" /> 
+         	<put-attribute name="footer"  value="/WEB-INF/views/inc/footer.jsp" /> 
+         	<put-attribute name="aside"   value="/WEB-INF/views/customer/inc/aside.jsp" /> 
+         	<put-attribute name="visual"  value="/WEB-INF/views/customer/inc/visual.jsp" /> 
+         	<put-attribute name="content" value="/WEB-INF/views/customer/{1}.jsp" /> 
+    </definition>  
+    -->
+   <!-- 회원  -->
+   <!-- 
+   <definition name="joinus.*" template="/WEB-INF/views/customer/inc/layout.jsp"> 
+         	<put-attribute name="title"   value="kosta notice list" />
+         	<put-attribute name="header"  value="/WEB-INF/views/inc/header.jsp" /> 
+         	<put-attribute name="footer"  value="/WEB-INF/views/inc/footer.jsp" /> 
+         	<put-attribute name="aside"   value="/WEB-INF/views/customer/inc/aside.jsp" /> 
+         	<put-attribute name="visual"  value="/WEB-INF/views/customer/inc/visual.jsp" /> 
+         	<put-attribute name="content" value="/WEB-INF/views/customer/{1}.jsp" /> 
+    </definition>  
+    -->
+    <!-- 4단계 
+         3단계를 응용
+         
+         >customer.notice  > *.*  {1} > customer , {2} > notice
+         >joinus.join      > *.*
+       
+         순서에 처리도 ^^! > home.* > *.*  
+    -->
+    <definition name="home.*" template="/WEB-INF/views/inc/layout.jsp">
+    	<put-attribute name="header"  value="/WEB-INF/views/inc/header.jsp" />
+    	<put-attribute name="footer"  value="/WEB-INF/views/inc/footer.jsp" />
+    	<put-attribute name="content" value="/WEB-INF/views/{1}.jsp" />
+    </definition> 
+    <definition name="*.*" template="/WEB-INF/views/{1}/inc/layout.jsp"> 
+         	<put-attribute name="title"   value="kosta notice list" />
+         	<put-attribute name="header"  value="/WEB-INF/views/inc/header.jsp" /> 
+            <put-attribute name="css"     value="{2}.css"/>
+         	<put-attribute name="footer"  value="/WEB-INF/views/inc/footer.jsp" /> 
+         	<put-attribute name="aside"   value="/WEB-INF/views/{1}/inc/aside.jsp" /> 
+         	<put-attribute name="visual"  value="/WEB-INF/views/{1}/inc/visual.jsp" /> 
+         	<put-attribute name="content" value="/WEB-INF/views/{1}/{2}.jsp" /> 
+    </definition> 
+  
+</tiles-definitions>  
+
+
+
+
+ 

@@ -1,0 +1,353 @@
+기존 : JSP 기반의 사이트 (DAO  , VO)
+
+고전적인 Spring 기반의 서비스
+
+
+
+Spring 사용 LIB :
+MAIN
+
+dist\안에 Jar import ....
+
+1. web.xml => Front Contoller : DispatcherServlet 구현
+           => URL 패턴 : *.htm
+
+2. 필요한 객체를 Load => 패턴을 가지고 있는 녀석들
+   사용자가 notice.htm
+   xml 하나 추가 ->     <servlet-name>dispatcher</servlet-name>
+   dispatcher-servlet.xml 생성
+   
+-------------------------------------------------------------------------------
+Spring 도 기존의 MVC 사용 
+Model 유지
+View 유지
+Controller =>  DispatcherServlet => 사용하는 서비스 class 제작
+
+3. Controller 역활을 하는 클래스 제작 
+   => NoticeController 클래스 
+   단 이 클래스는 implements Controller 구현 하여야 한다
+   =>handleRequest 메서드가 모든 처리 담당
+   =>글쓰기 -> 클래스
+   =>글상세 -> 클래스 
+   =>필요한 DAO 클래스도 참조 관계로 가지고 있다
+
+4.  NoticeController 인젝션 처리 통해 DispatcherServlet 사용할 수 있게
+    NoticeController 를 빈으로 등록  (페턴 구현)
+    사용하는 추가 class 에 대해서 setter 처리 할 수 있도록 ref=설정
+    
+    주의사항
+    <property name="noticeDao" ref="noticeDao"></property>   
+     =>name="noticeDao" => private NoticeDao noticeDao;
+     =>setter 동작 
+
+5. view 단처리 (JSTL and EL)
+   jar 추가
+   
+6. 기본적인 조회 처리 완료
+------------------------------------------------------------
+현재 추가적인 구현 : 상세보기  구현
+그런데 현재 사용하는 Spring 방식에서는 하나의 기능이(method) 구현 하기 위해서
+별도로 하나의 클래스 생성(controller) 상세를 처리하는 ....
+-> 그래서 annotation 사용하면 지금의 문제를 해결 가능 (하나의 클래스가 여러개의 기능)    
+   
+===============================================================
+
+--SpringMVC_Basic05_WebSite_Annotation 작업하기
+
+@Controller
+@RequestMapping
+@RequestParam
+등등 작업을 통해서 변환
+
+변경사항
+1.web.xml 
+  -Filter 추가 한글처리
+2.설정 
+  -@Controller 전환     
+   
+===========================================
+
+SpringMVC_Basic06_WebSite_Annotation_jdbcTemplate
+
+1. JdbcTemplate 기반 코드 전환
+ 2. 별도의 lib(.jar)
+    -spring-jdbc-4.2.5
+    -spring-tx-4.2.5 추가
+ 3. NoticeDao : 인터페이스 
+    NewNoticeDao : NoticeDao 인터페이스 구현
+    NewNoticeDao : JdbcTemplate setter  Injection  구현
+    
+    
+ 4. DB 작업을 위한 (DI 구성)
+    applicationContext.xml 구성하기
+    (공통빈 및 injection 구현)
+    listener 를 통한 applicationContext 로드 Container 구성
+    
+    DI구성 파일 (web.xml 변경)
+    applicationContext.xml > listener 등록
+    dispatcher-servlet.xml > DispatcherServlet 등록  
+     
+ 5. NewNoticeDao > JDBCTemplate 코드 변환 작업 
+    CRUD 변환 (query , queryForObject , update)
+    
+ 6. 파일 다운로드 TEST 
+    noticeDetail.jsp > 링크 > download.htm 
+    <a href="download.htm?p=upload&f=${notice.fileSrc}">${notice.fileSrc}</a>
+    
+ 7. 멀티 파일 업로드 작업 
+    1. alter table notices
+       add FileSrc2 varchar2(500);
+       
+    2. DTO,VO (notice) 변경
+       private String fileSrc2; (setter , getter) 추가
+       
+       private CommonsMultipartFile file; 변경
+       
+       private List<CommonsMultipartFile> files; (setter, getter) 추가
+       
+    3. Page
+       파일1<input type="file" name=files[0]
+       파일2<input type="file" name=files[1]
+    
+    4. CustomerController.java > 데이터 삽입 수정
+                               > 데이터 수정 ...   
+    
+          
+    
+   5. public int insert(Notice n) 
+      insert 구문에 FileSrc2 memberfield 추가
+      
+   6. noticeDatail.jsp 
+      파일 2개 Display > 다운로드
+      
+   7. 수정하기 
+      실제 수정하기에서도 2개 파일 업로드 허용
+      noticeEdit.jsp 수정
+      dao 수정
+      controller  수정      
+ ---------------------------------------- 게시판(다중 파일 업로드)
+ 8. 회원 controller 만드는 작업
+    8.1 JoinController.java 생성
+    
+ 9. 회원 (JdbcTemplate 변환 )
+    함수 2가지 구현 회원가입 , 회원조회 
+    -MemberDao Interface  생성
+    -NewMemberDao 인터페이스 구현한 NewMemberDao 작성
+    -JDBCTemplate Injection 사용 
+    -NewMemberDao 빈객체 등록
+    
+    Sorry : 
+    --요놈 실행 컬럼명좀 바꾸어 주세요
+    ALTER TABLE member RENAME COLUMN "UID" to  userid ; 
+      
+  
+     
+ 10. 대문 (WebContent >  index.htm 빈 페이지 생성)  
+      10.1 IndexController 생성하기
+           > index.jsp 매핑
+      10.2 IndexController xml에 빈객체 등록     
+      
+      10.3 return "redirect:../index.htm"; //수정 요망(주의 사항)
+      
+      
+ 11. <context:component-scan base-package /> 사용하기
+ 
+    1. 차분 작업
+    <context:annotation-config /> 
+    <!-- 게시판 관련 : DAO , controller -->
+	<bean id="noticedao" class="dao.NewNoticeDao"></bean>
+	<bean id="customerController" class="ncontrollers.CustomerController" />
+   
+    <!-- 회원관련 : DAO , Controller -->
+	<bean id="newMemberDao" class="dao.NewMemberDao"></bean>
+	<bean id="joinController"  class="ncontrollers.JoinController"></bean>
+ 
+	
+	<!-- 대문 페이지 관련  -->
+	<bean id="indexController"  class="ncontrollers.IndexController"></bean>
+ 
+    2. DI 구성 하는 xml 대해서 
+       -dispatcher-servlet.xml
+       <context:component-scan base-package="ncontrollers" />
+       -applicationContext.xml
+       -구현 안되어 있어요
+    
+    현재 :  메인 화면
+    현재 :  회원가입 
+    현재 :  게시판 글쓰기 , 목록보기 , 수정하기 , 삭제하기 완료  
+    
+1. queryForObject : 
+   - [레코드 하나]의 값만을 들고 올때 사용 
+   - 주의점 : 0~2개 이상이면
+   --IncorrectResultSizeDataAccessException을 발생시킴. 
+   --select sum(sal) from emp
+ 
+2. query : [레코드 여러개]의 값[객체목록]을 가져올때 사용
+   --리턴타입  List<T>
+ 
+3. queryForList :
+   --쿼리 실행 결과로 읽어온 컬럼개수가 한개인 경우
+   --select name from emp
+ 
+3. JdbcTemplete 객체 사용시 
+   -컬럼명과 VO의 변수명이 같아야한다.
+ 
+4. ParameterizedBeanPropertyRowMapper와 RowMapper 차이점
+   - ParameterizedBeanPropertyRowMapper 컬럼명이 같은 경우
+   - RowMapper 컬럼명이 다른경우에 set 사용
+   - BeanPropertyRowMapper경우는 list와 같은 여러개의 레코드를 받을 때 사용
+    
+================================
+Tiles Lib 사용하기
+
+Tiles Lib 사용하기
+
+1.공통영역 구성하기
+-include 사용....(헤더 , 하단 , 메뉴)
+->공통 페이지 (header.jsp, bottom.jsp , menu.jsp)
+->content.jsp > 3개 jsp 가지고 와서
+->board.jsp > 3개 jsp 가지고 와서 
+
+2.Master Page 설정을 통해서 공통페이지 구성
+  Master Page -> header, bottom, menu
+
+3.Tiles Lib 사용해서 > (Spring)   
+  라이브러리 > http://tiles.apache.org 
+           사이트에서 다운로드 : tiles-2.2.2-bin.zip 
+           상위버전 : 3.0.4 까지 ....
+           
+4.현재 프로젝트 공통영역이 구성되어 있지 않아요
+  -공통영역분리
+  -실제 공통영역 이미 분리하고 시작
+
+5.<jsp:include=""> 
+
+
+6.Client 직접 JSP 파일에 접근 
+  -WEB-INF > 안으로 이동 >views> 구조
+  -WEB-INF >(X) css , image , htm,html .... 기존구조
+
+7.layout.jsp 페이지를 만들어서 => Master 페이지의 역활
+
+8.Tiles lib 추가하는 작업
+
+------------------------------------------------
+1. WEB-INF > views 폴더생성
+
+2. WebContent (root context) > 기본 폴더 구조 
+   > css, html , htm
+3. WEB-INF > views > 안에 WebContent 동일한 구조 폴더 생성 (.jsp)
+
+4. 공통영역 구성
+   WEB-INF > views > inc(최상위공통) : header , footer , layout
+             views > customer > inc (폴더의 공통구조) : aside(navi) , visual, layout
+             views > joinus   > inc (폴더의 공통구조) : aside(navi) , visual, layout
+5. views > inc (header , footer ) 공통 레이아웃 설정
+
+5.1 ETC : index.jsp(views 폴더 안으로) 
+          index.jsp 내용 삭제
+
+  
+5.2 기존 jsp 파일에서 Main 부분만 남기고 공통영역 삭제하기
+    -WEB-INF/views/Customer 폴더안에 jsp정리
+    -WEB-INF/views/joinus 폴더안에 jsp정리
+
+---->
+
+6. Tiles 사이트에서 필요한 lib
+   http://tiles.apache.org/2.2/framework/tutorial/basic/pages.html
+   tiles2.2.2 + dependency > lib 붙여넣기
+   
+----->    
+7. Tiles 설정하기
+   >Tiles.xml
+ <?xml version="1.0" encoding="utf-8"?>
+  <!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+   <tiles-definitions>
+    <definition>
+   
+    </definition>
+   </tiles-definitions>     
+    
+    *여러개의 타일즈 파일 사용하기
+     --일반 JSP 에서 
+   <param-value>
+       <!-- ,사이 공백 제거  -->
+          /WEB-INF/tiles-hello.xml,/WEB-INF/tiles-menu.xml
+   </param-value>
+
+8. Tiles.xml
+   설정
+   <definition name="customer.notice" template="/WEB-INF/views/customer/inc/layout.jsp">
+    <put-attribute name="title"   value="kosta notice list" />
+    <put-attribute name="header"  value="/WEB-INF/views/inc/header.jsp" />
+    <put-attribute name="footer"  value="/WEB-INF/views/inc/footer.jsp" />
+    <put-attribute name="aside"   value="/WEB-INF/views/customer/inc/aside.jsp" />
+    <put-attribute name="visual"  value="/WEB-INF/views/customer/inc/visual.jsp" />
+    <put-attribute name="content" value="/WEB-INF/views/customer/notice.jsp" />
+  </definition>   
+-------------------------------------------------------------
+
+--------------------------------------------------------------               
+               
+10. xml 설정하기
+import org.springframework.web.servlet.view.tiles2.TilesConfigurer;
+import org.springframework.web.servlet.view.UrlBasedViewResolver;
+import org.springframework.web.servlet.view.tiles2.TilesView;
+
+<!--  Tiles 설정하기 -->
+<bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
+ <property name="definitions">
+  <list>
+   <value>/WEB-INF/Tiles.xml</value>
+  </list>
+ </property>
+</bean>
+<bean id="urlBasedViewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+ <property name="viewClass" 
+     value="org.springframework.web.servlet.view.tiles2.TilesView" />
+</bean> 
+<!--  Tiles 설정 END --> 
+
+
+     
+***********************설정방법***********************  
+<!-- 그러면 위 처럼 모든 페이지마다 name="customer.noticeReg"  
+       definition 을 페이지의 개수 만큼 ???
+  
+       해결방법 1
+       회원가입 
+     return "joinus/login"
+     return "joinus/join"
+     
+     => 상속관계를 통한 설정하기
+        
+  -->
+  <definition name="customer.noticeReg"  extends="customer.notice">
+       <put-attribute name="content" value="/WEB-INF/views/customer/noticeReg.jsp" />
+  </definition>
+  <definition name="customer.noticeEdit"  extends="customer.notice">
+       <put-attribute name="content" value="/WEB-INF/views/customer/noticeEdit.jsp" />
+  </definition>
+  
+  ***Tiles 설정 참조 최종본****
+
+11. 이제 마스터 역활을 하는 Layout.jsp 페이지 수정하기
+     customer  가지고 있는 layout.jsp(Master page)
+     > <!-- header 영역 -->
+  <tiles:insertAttribute name="header" />
+  
+12 Controller 단 수정하기
+   controller 수정 return String view >
+               > return "customer.notice"  
+   
+   
+   
+   
+   
+   
+   
+   
+     

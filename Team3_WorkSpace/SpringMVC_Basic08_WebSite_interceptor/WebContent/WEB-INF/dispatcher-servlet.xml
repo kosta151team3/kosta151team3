@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+
+
+
+
+<!-- 객체의 생성과 조립(injection) -->
+<context:annotation-config />
+<context:component-scan base-package="ncontroller" />
+
+<!-- 게시판 관련 DAO  생략 : @Repository class 걸면 생략가능 -->
+<bean id="noticedao" class="dao.NewNoticeDao"></bean>
+
+<!-- 회원관련 DAO     생략 : @Repository class 걸면 생략가능-->
+<bean id="newMemberDao" class="dao.NewMemberDao"></bean>
+
+
+
+<mvc:interceptors>
+	<!-- 글쓰기에 로그인 처리 인터셉터 적용 -->
+	<mvc:interceptor>
+		<mvc:mapping path="/customer/noticeReg.htm"/>
+		<!-- <mvc:mapping path="/customer/noticeReg.htm"/> noticeReg를 *로 바꾸면  customer/걸리는 주소들 다 해당-->
+		
+		<bean id="Interceptor" class="ncontroller.Interceptor"></bean>
+	</mvc:interceptor>
+	
+	<!-- 실행 시간 인터셉터 적용 -->
+	<bean class="ncontroller.MeasuringInterceptor"></bean>
+</mvc:interceptors>
+
+<!--  Tiles 설정하기 -->
+ <bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
+ <property name="definitions">
+  <list>
+   <value>/WEB-INF/Tiles.xml</value>
+  </list>
+ </property>
+</bean>
+<bean id="urlBasedViewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+ <property name="viewClass" 
+     value="org.springframework.web.servlet.view.tiles2.TilesView" />
+</bean>  
+<!--  Tiles 설정 END --> 
+
+
+
+
+
+
+
+</beans>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
