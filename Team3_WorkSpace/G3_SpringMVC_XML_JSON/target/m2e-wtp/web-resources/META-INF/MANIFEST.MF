@@ -1,5 +1,10 @@
 Manifest-Version: 1.0
-Built-By: MorsSola1105
+<<<<<<< HEAD
+Built-By: dahye
+Build-Jdk: 1.8.0_131
+=======
+Built-By: KOSTA
 Build-Jdk: 1.8.0_121
+>>>>>>> 197c1f54ce18264a5ca370c54d19443a8acad6ff
 Created-By: Maven Integration for Eclipse
 
