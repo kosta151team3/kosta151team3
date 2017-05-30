@@ -1,0 +1,160 @@
+﻿Tiles 설정하기
+
+1.공통영역 구성
+  -기존 (include 개념)
+  --top.jsp , left.jsp ,bottom.jsp
+  --Board.jsp  > include 사용해서
+  --Member.jsp > include 사용해서
+
+2.Tiles 사용해서 위 반대개념
+  -Master  Page (전제 LayOut 을 가지는 페이지)
+  -Master  Page (top,  left , bottom) 영역
+  -Master  Page 에 Content 를 끼워 넣어서 사용
+
+
+3.Tiles 사이트 방문하기
+  -Tiles lib 다운받기
+
+  -http://tiles.apache.org/
+  -(API)
+  -http://tiles.apache.org/2.2/framework/getting_started.html
+  -(다운로드)
+  -http://tiles.apache.org/download.html
+  --버전 : 3.x.x  , 2.x.x
+  --http://www.apache.org/dyn/closer.cgi/tiles/v2.2.2/tiles-2.2.2-bin.zip
+
+4. lib 참조하기
+   -TIles 관련 lib
+   -의존 lib 추가하기
+
+5. 설정
+   -web.xml 설정
+   1.  Tiles Layout 설정 로드
+   <servlet>
+  	<servlet-name>tiles</servlet-name>
+  	<servlet-class>org.apache.tiles.web.startup.TilesServlet</servlet-class>
+  	<init-param>
+  		<param-name>org.apache.tiles.impl.BasicTilesContainer.DEFINITIONS_CONFIG</param-name>
+  		<param-value>
+  				/WEB-INF/설정.xml ,	/WEB-INF/설정2.xml
+  		</param-value>
+  	</init-param>
+  	<load-on-startup>1</load-on-startup>
+   </servlet>
+   2.  DispatchServlet 설정하기
+    <servlet>
+  		<servlet-name>TilesDispatchServlet</servlet-name>
+  		<servlet-class>org.apache.tiles.web.util.TilesDispatchServlet</servlet-class>
+  	</servlet>
+    <servlet-mapping>
+  		<servlet-name>TilesDispatchServlet</servlet-name>
+  		<url-pattern>*.tiles</url-pattern>
+    </servlet-mapping>
+   
+   3.적용방법   
+   <!--  
+  	<definition name="help.home" template="/template/layout.jsp">
+  	위에서 정의한 태그를 /WEB-INF/설정.xml 가지고 있다
+  	
+    http://localhost:8080/Web_Basic/help.home.tiles -> help.home 동작
+    http://localhost:8080/Web_Basic/index.tiles  -> name=index 적용
+  -->
+  
+  6. Tiles template 파일 만들기
+     -xml 만들기
+     - template 기본구조
+    <?xml version="1.0" encoding="UTF-8"?>
+	<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+	<tiles-definitions>
+		<definition name="hello" template="">
+			<put-attribute name=""></put-attribute>
+		</definition>
+	</tiles-definitions>  
+	
+	6.1 
+	<tiles-definitions>
+	<definition name="hello" template="/template/layout.jsp">
+		<put-attribute name="title"  value="Hello world" />
+		<put-attribute name="header" value="/template/header.jsp" />
+		<put-attribute name="menu"   value="/template/menu.jsp" />
+		<put-attribute name="body"   value="hello_body.jsp" />
+		<put-attribute name="footer" value="/template/footer.jsp" />
+	</definition>
+	</tiles-definitions>   
+	
+	6.2 각각의 jsp 파일 생성
+	-공통페이지 (header, left , bottom jsp) 생성
+	-Master 페이지 격인 (layout.jsp) 생성
+	-layout.jsp 에서 tiles-hello.xml있는 자원을 사용하기
+	
+	6.3 
+	- tiles-hello.xml 있는 
+	- template 적용되는 페이지 만들기
+	- WebContent/hello.jsp
+	
+	6.4
+	- tiles 장점
+	- layout인 마스터 페이지에 변경이 용이하다
+	- hello2.jsp 에서 테스트 
+	
+	6.5
+	- tiles 장점 (상속을 통한 재정의 가능)
+	- layout인 마스터 페이지에 변경이 용이하다
+	- hello3.jsp ,hello4.jsp 에서 테스트 
+	
+	6.6 (옵션)
+	- tiles 에서 외부 클래스를 로드 할 수 있다
+	- 단  preparer="com.kosta.tiles.MenuItemView"
+	- 메뉴 , 공통 기능 정의하기도 한다
+	- hello5.jsp /template2
+	- 구현 : home_menu.jsp
+	
+	6.7
+	<!-- 1단계 : 상속관계 통한 설정 (반복코드 생략) 
+	     2단계 : [패턴]으로 처리하기 
+	       게시판(customer.*) 
+	     customer.* => notice 
+	     customer.* => notcieReg 
+	     customer.* => noticeDetail 
+	     customer.* .*. * {1}{2}{3} -->
+	     customer.a.b.c > {1} > a  , {2} > b , {3} > c 
+    	<!-- 
+    	customer.notice
+    	customer.noticeReg
+    	
+    	
+    	<definition name="customer.*" template="/WEB-INF/views/customer/inc/layout.jsp"> 
+         	<put-attribute name="title"   value="kosta notice list" />
+         	<put-attribute name="header"  value="/WEB-INF/views/inc/header.jsp" /> 
+         	<put-attribute name="footer"  value="/WEB-INF/views/inc/footer.jsp" /> 
+         	<put-attribute name="aside"   value="/WEB-INF/views/customer/inc/aside.jsp" /> 
+         	<put-attribute name="visual"  value="/WEB-INF/views/customer/inc/visual.jsp" /> 
+         	<put-attribute name="content" value="/WEB-INF/views/customer/{1}.jsp" /> 
+         </definition> 
+         <definition name="joinus.*" template="/WEB-INF/views/joinus/inc/layout.jsp"> 
+         	<put-attribute name="title"  value="kosta notice list" /> 
+         	<put-attribute name="header" value="/WEB-INF/views/inc/header.jsp" /> 
+         	<put-attribute name="footer" value="/WEB-INF/views/inc/footer.jsp" /> 
+         	<put-attribute name="aside"  value="/WEB-INF/views/joinus/inc/aside.jsp" /> 
+         	<put-attribute name="visual" value="/WEB-INF/views/joinus/inc/visual.jsp" /> 
+         	<put-attribute name="content" value="/WEB-INF/views/joinus/{1}.jsp" /> 
+         </definition> 
+         -->
+	     <!-- 최종본 패턴활용하기 -->
+		<definition template="/WEB-INF/views/inc/layout.jsp" name="home.*">
+			<put-attribute name="header" value="/WEB-INF/views/inc/header.jsp"/>
+			<put-attribute name="footer" value="/WEB-INF/views/inc/footer.jsp"/>
+			<put-attribute name="content" value="/WEB-INF/views/{1}.jsp"/>
+		</definition>
+		<definition template="/WEB-INF/views/{1}/inc/layout.jsp" name="*.*">
+			<put-attribute name="title" value="welcome to kosta"/>
+			<put-attribute name="css" value="{2}.css"/>
+			<put-attribute name="header" value="/WEB-INF/views/inc/header.jsp"/>
+			<put-attribute name="footer" value="/WEB-INF/views/inc/footer.jsp"/>
+			<put-attribute name="aside" value="/WEB-INF/views/{1}/inc/aside.jsp"/>
+			<put-attribute name="visual" value="/WEB-INF/views/{1}/inc/visual.jsp"/>
+			<put-attribute name="content" value="/WEB-INF/views/{1}/{2}.jsp"/>
+		</definition>
+	
