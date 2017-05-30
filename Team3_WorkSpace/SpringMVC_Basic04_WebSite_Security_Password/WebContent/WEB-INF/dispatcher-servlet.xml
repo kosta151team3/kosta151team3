@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context 
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                          ">
+	<!-- 객체의 생성과 조립(injection) -->
+	<context:annotation-config />
+	<context:component-scan base-package="ncontroller" />
+
+	<!-- 회원관련 DAO 생략 : @Repository class 걸면 생략가능 -->
+	<bean id="newMemberDao" class="dao.NewMemberDao"></bean>
+
+	<!-- Tiles 설정하기 -->
+	<bean id="tilesConfigurer"
+		class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
+		<property name="definitions">
+			<list>
+				<value>/WEB-INF/Tiles.xml</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="urlBasedViewResolver"
+		class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.tiles2.TilesView" />
+	</bean>
+	<!-- 게시판 목록 보기 -->
+	<!-- <bean name="/customer/notice.htm" class="controllers.customer.NoticeController"> 
+		<property name="noticedao" ref="noticeDao"></property> </bean> <bean name="/customer/noticeDetail.htm" 
+		class="controllers.customer.NoticeDetailController"> <property name="noticedao" 
+		ref="noticeDao"></property> </bean> DAO 빈 생성 <bean id="noticeDao" class="dao.NoticeDao"></bean> -->
+</beans>
