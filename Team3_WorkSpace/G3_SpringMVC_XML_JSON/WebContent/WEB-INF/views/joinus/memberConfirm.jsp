@@ -29,14 +29,11 @@
 			
 			
 			$('#submit').click(function(){
-				var sendpwd = $('#pwd').val();
-				console.log("111111");
-				console.log(sendpwd);
 				 $.ajax(
 						 {
 							type : "post",
 							url  : "memberConfirm.htm",
-							data : "pwd="+sendpwd,
+							data : "pwd="+$('#pwd').val,
 							success : function(data){
 								if (data==null) {
 									$('#content').prepend("올바른 비밀번호가 아닙니다");
