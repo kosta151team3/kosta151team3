@@ -1,0 +1,37 @@
+----------게시글 작업
+
+create SEQUENCE tbl_board_seq;
+
+create table tbl_board(
+  bno number not null,
+  title VARCHAR2(200) not null,
+  content VARCHAR2(2000) null,
+  writer VARCHAR2(50) not null,
+  regdate date default sysdate,
+  viewcnt number default 0,
+  PRIMARY KEY (bno)
+);
+ 
+insert into TBl_BOARD(bno, title, content, writer) 
+  values (tbl_board_seq.nextval, '제목', '내용', 'admin');
+  
+
+-----------댓글 작업
+
+create sequence tbl_reply_seq;
+
+create table tbl_reply(
+  rno number not null,
+  bno number default 0,
+  replytext varchar2(1000) not null,
+  replyer VARCHAR2(50) not null,
+  regdate date default sysdate,
+  updatedate date default sysdate,
+  primary KEY (rno)
+);
+
+ALTER TABLE tbl_reply
+ADD CONSTRAINT FK_USERS FOREIGN KEY(bno)
+REFERENCES tbl_board(bno);
+
+commit;
